@@ -1,6 +1,7 @@
 # Archivos compilados
 *.out
 *.o
+*~
 
 # logs
 *.log
