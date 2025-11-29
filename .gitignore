@@ -1,3 +1,9 @@
+build/
+*.o
+*.dSYM
+*.exe
+*.out
+/.vscode/
 # Archivos compilados
 *.out
 *.o
