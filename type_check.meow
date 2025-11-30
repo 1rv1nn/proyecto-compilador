@@ -1,0 +1,78 @@
+// ===================================
+// CASOS VÁLIDOS (DEBEN COMPILAR)
+// ===================================
+// ===================================
+// CASOS VÁLIDOS (DEBEN COMPILAR)
+// ===================================
+
+// 1. Declaración simple de tipos base (Registro en Tabla de Símbolos)
+meow meow entero = 10;
+meow meow meow flotante = 3.14;
+meow meow meow bandera = 4.5;
+
+// Declaración y asignación de booleanos
+meowmeow bandera_bool = meowt;
+meowmeow otra_bool = meowf;
+bandera_bool = meowf;
+otra_bool = bandera_bool;
+
+// Asignación inválida a booleano desde int (debe dar error semántico)
+meowmeow invalid_bool = 1; // **ERROR ESPERADO**
+
+
+// 2. Promoción Implícita 
+meow meow result_float = entero + 5.5; // int + float -> float
+meow meow otro_float = 10; // Asignación de int a float
+flotante = entero; // Asignación de int a float
+
+// 3. Expresiones válidas (int + int = int)
+meow meow suma_valida = entero + 100;
+entero = suma_valida;
+
+// ===================================
+// ===================================
+// CASOS INVÁLIDOS (DEBEN PRODUCIR ERROR SEMÁNTICO)
+// ===================================
+
+// 4. Error Semántico: Asignación de float a int (Pérdida de precisión, no permitida)
+entero = flotante; // **ERROR ESPERADO**
+
+// 5. Error Semántico: Tipos incompatibles en aritmética
+meowmeow bool_invalida = (entero + bandera); // **ERROR ESPERADO** (int + bool)
+meow meow suma_invalida = flotante + bandera; // **ERROR ESPERADO** (float + bool)
+
+// 6. Error Semántico: Uso de variable no declarada
+no_existe = 1; // **ERROR ESPERADO** (ID no encontrado en Tabla de Símbolos)
+
+// 7. Error Semántico: Redefinición (Si implementaste la comprobación en insert_symbol)
+meow meow entero = 5; // **ERROR ESPERADO** (Variable 'entero' ya existe)
+
+// ===================================
+// PRUEBAS DE ARREGLOS
+// ===================================
+
+// CASOS VÁLIDOS
+// Declaraciones de arreglos (tipo + identificador + [length])
+meow meow numeros[5];
+meowmeow flags[3];
+meow meow meow floats_arr[2];
+
+// Asignación a elementos de arreglos
+numeros[0] = 1;
+numeros[1] = 2;
+numeros[2] = entero; // 'entero' es int
+floats_arr[0] = 1.5;
+floats_arr[1] = 10; // int a float -> promoción implícita permitida
+
+// Acceso a propiedad length
+meow meow len_numeros = numeros.length;
+
+// CASOS INVÁLIDOS (deben producir error semántico)
+// Asignación de float a elemento int
+numeros[3] = 3.14; // **ERROR ESPERADO**
+
+// Índice no entero
+numeros[0.5] = 2; // **ERROR ESPERADO** (índice debe ser int)
+
+// Uso de 'length' en no-arreglo
+meow meow not_array = entero.length; // **ERROR ESPERADO**
