@@ -1,0 +1,39 @@
+// Declaraciones
+meow meow x = 10;          // int
+meow meow y = 20;          // int
+meow meow c = 3;           // int, color
+meowmeow pressed = meowf;  // bool
+meowww mensaje = "Hola";   // string
+
+// --- Casos CORRECTOS ---
+
+// FIS-25: dibujar pixel (x, y, c) con puros int
+miau_pixel(x, y, c);
+
+// key: lee tecla k en variable entera dest
+meow meow k;
+miau_key(k, k);
+
+// input: leer un entero por stdin
+meow meow n;
+miau_input(n);
+
+// print: imprime un entero
+miau_print(x);
+
+// --- Casos INCORRECTOS (deben dar error de tipo) ---
+
+// 1 pixel con float
+miau_pixel(3.14, y, c);
+
+// 2 pixel con string
+miau_pixel(x, mensaje, c);
+
+// 3 key con destino que no es int
+miau_key(k, mensaje);
+
+// 4 input con destino que no es id (literal)
+miau_input(10);
+
+// 5 print de string si lo restringieron a int
+miau_print(mensaje);

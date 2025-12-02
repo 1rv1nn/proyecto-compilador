@@ -40,6 +40,7 @@ void yyerror(const char *s);
 
 // Tokens de Palabras Clave
 %token T_DECLARACION T_IF T_ELSE T_WHILE T_FOR T_FUNCTION T_RETURN
+%token T_MIAU_PIXEL T_MIAU_KEY T_MIAU_INPUT T_MIAU_PRINT T_COMMA
 %token T_TRUE T_FALSE
 
 // Tokens que representan los Tipos (usados en la Declaración)
@@ -48,6 +49,7 @@ void yyerror(const char *s);
 // Tipos de los no-terminales
 %type <type> Tipo Expresion Termino Factor Base Optinit Declaracion Asignacion
 %type <ival> OptArray
+%type <type> MiauPixel MiauKey MiauInput MiauPrint
 
 %%
 
@@ -58,8 +60,12 @@ ListaSentencias: Sentencia ListaSentencias
                ; 
 
 Sentencia: Declaracion T_SEMICOLON
-         | Asignacion T_SEMICOLON
-         ; 
+    | Asignacion  T_SEMICOLON
+    | MiauPixel   T_SEMICOLON
+    | MiauKey     T_SEMICOLON
+    | MiauInput   T_SEMICOLON
+    | MiauPrint   T_SEMICOLON
+    ;
 
 // DECLARACIÓN 
 // Aceptar dos formas: con prefijo `T_DECLARACION` ("meow") o directamente con el tipo
@@ -270,5 +276,62 @@ Base: T_LPAREN Expresion T_RPAREN { $$ = $2; } //
         }
     }
 ;
+
+
+//Primitivas FIS-25
+
+MiauPixel:
+      T_MIAU_PIXEL T_LPAREN Expresion T_COMMA Expresion T_COMMA Expresion T_RPAREN
+      {
+          /* Todos los argumentos deben ser int */
+          if ($3 == TYPE_INT && $5 == TYPE_INT && $7 == TYPE_INT) {
+              $$ = TYPE_VOID;
+          } else {
+              fprintf(stderr, "Error semántico: miau_pixel espera tres argumentos de tipo int (x, y, color).\n");
+              $$ = TYPE_ERROR;
+          }
+      }
+    ;
+
+MiauKey:
+      T_MIAU_KEY T_LPAREN Expresion T_COMMA T_ID T_RPAREN
+      {
+          /* Primer argumento debe ser int. El identificador debe ser bool o int */
+          int idType = get_symbol_type($5);
+          if ($3 == TYPE_INT && (idType == TYPE_INT || idType == TYPE_BOOL)) {
+              $$ = TYPE_VOID;
+          } else {
+              fprintf(stderr, "Error semántico: miau_key espera (int, id<int|bool>). \n");
+              $$ = TYPE_ERROR;
+          }
+      }
+    ;
+
+MiauInput:
+      T_MIAU_INPUT T_LPAREN T_ID T_RPAREN
+      {
+          /* El identificador debe ser de tipo int */
+          int idType = get_symbol_type($3);
+          if (idType == TYPE_INT) {
+              $$ = TYPE_VOID;
+          } else {
+              fprintf(stderr, "Error semántico: miau_input espera un identificador int. \n");
+              $$ = TYPE_ERROR;
+          }
+      }
+    ;
+
+MiauPrint:
+      T_MIAU_PRINT T_LPAREN Expresion T_RPAREN
+      {
+          /* Acepta int, float, bool o string */
+          if ($3 == TYPE_INT || $3 == TYPE_FLOAT || $3 == TYPE_BOOL || $3 == TYPE_STRING) {
+              $$ = TYPE_VOID;
+          } else {
+              fprintf(stderr, "Error semántico: miau_print no acepta este tipo de expresión. \n");
+              $$ = TYPE_ERROR;
+          }
+      }
+    ;
 
 %%
