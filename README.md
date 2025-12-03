@@ -81,5 +81,18 @@ gcc -o meowc *.o
 valgrind --leak-check=full ./meowc type_check.meow
 ```
 
+**Compilar para generar el archivo `.txt`**
 
+1. Compila el compilador `meowc` (solo es necesario cuando cambias código fuente):
+2. Ejecuta el compilador sobre un archivo `meowc` y redirige la salida a un `.txt`
+```bash
+   make
+./meowc examples/opcion_c_marquee.meow > opcion_c_marquee.txt
 
+```
+3.El compilador te pedirá en consola `stderr`el mensaje del letrero:
+Ingresa el mensaje del letrero (solo 0-9 . $):
+
+Escribe el mensaje (por ejemplo 27.9$) y presiona Enter.
+
+El programa FIS-25 generado se imprime en stdout y queda guardado en el `.txt` que especificaste en la redirección.
