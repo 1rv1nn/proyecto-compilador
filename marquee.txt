@@ -1,66 +1,88 @@
 // Opción C: Letrero Dinámico (Marquee)
-// Mensaje: "123.45$"
-// Cada carácter ocupa 4 columnas -> ancho total = 28
+// Mensaje: "124.9$"
+// Cada carácter ocupa 1 píxel + 1 espacio -> ancho total = 12
 // Controles: A = izquierda (KEY 6), D = derecha (KEY 7)
 
-VAR x
-VAR y
-VAR color
-VAR left_now
-VAR right_now
-VAR left_prev
-VAR right_prev
-VAR ONE
-VAR MIN_X
-VAR MAX_X
-VAR TMP
-VAR COND
+VAR x            // offset horizontal del letrero
+VAR y            // fila en la pantalla
+VAR color        // color del letrero (1 = encendido)
+VAR left_now     // estado actual tecla A (KEY 6)
+VAR right_now    // estado actual tecla D (KEY 7)
+VAR left_prev    // estado previo tecla A
+VAR right_prev   // estado previo tecla D
+VAR ONE          // constante 1
+VAR STEP         // paso en columnas por movimiento
+VAR MIN_X        // límite izquierdo
+VAR MAX_X        // límite derecho
+VAR TMP          // temporal
+VAR COND         // resultado de comparaciones
+VAR CLR_X        // para limpiar la fila
+VAR IDX          // índice del carácter
+VAR PIX_X        // columna actual de pixel a dibujar
+VAR TEXT_LEN     // longitud del mensaje
 
-// Posición inicial del texto
-ASSIGN 0 x
+// Posición inicial del letrero
+ASSIGN 20 x
 ASSIGN 30 y
-ASSIGN 3 color
+ASSIGN 1 color
+// Estados iniciales del teclado
 ASSIGN 0 left_now
 ASSIGN 0 right_now
 ASSIGN 0 left_prev
 ASSIGN 0 right_prev
 ASSIGN 1 ONE
-ASSIGN -28 MIN_X
+ASSIGN 1 STEP
+ASSIGN -12 MIN_X
 ASSIGN 63 MAX_X
+ASSIGN 6 TEXT_LEN
 
 LABEL MAIN_LOOP
-    // Aquí debería dibujarse el texto completo a partir de x,y
-    // Por ahora, como placeholder, dibujamos un solo píxel.
-    PIXEL x y color
+    ASSIGN 0 CLR_X
+LABEL CLEAR_ROW
+    PIXEL CLR_X y 0
+    ADD CLR_X ONE CLR_X
+    LT CLR_X 64 COND
+    IF COND GOTO CLEAR_ROW
 
-    // Leer estado actual de teclas (A y D)
+    ASSIGN 0 IDX
+LABEL DRAW_LOOP
+    LT IDX TEXT_LEN COND
+    IF COND GOTO DRAW_STEP
+    GOTO AFTER_DRAW
+
+LABEL DRAW_STEP
+    MUL IDX 2 TMP
+    ADD x TMP PIX_X
+    PIXEL PIX_X y color
+    ADD IDX ONE IDX
+    GOTO DRAW_LOOP
+
+LABEL AFTER_DRAW
+
     KEY 6 left_now    // A -> izquierda
     KEY 7 right_now   // D -> derecha
 
-    // Flanco: left_now == 1 && left_prev == 0 ?
-    EQ left_now 1 TMP
-    IF TMP GOTO LEFT_MAYBE
+    EQ left_prev 0 TMP
+    IF TMP GOTO A_PREV_ZERO
     GOTO CHECK_RIGHT
 
-LABEL LEFT_MAYBE
-    EQ left_prev 0 TMP
+LABEL A_PREV_ZERO
+    EQ left_now 1 TMP
     IF TMP GOTO MOVE_LEFT
     GOTO CHECK_RIGHT
 
 LABEL CHECK_RIGHT
-    // Flanco: right_now == 1 && right_prev == 0 ?
-    EQ right_now 1 TMP
-    IF TMP GOTO RIGHT_MAYBE
+    EQ right_prev 0 TMP
+    IF TMP GOTO D_PREV_ZERO
     GOTO END_KEYS
 
-LABEL RIGHT_MAYBE
-    EQ right_prev 0 TMP
+LABEL D_PREV_ZERO
+    EQ right_now 1 TMP
     IF TMP GOTO MOVE_RIGHT
     GOTO END_KEYS
 
 LABEL MOVE_LEFT
-    SUB x ONE x          // x = x - 1
-    // Clamp: si x < MIN_X => x = MIN_X
+    SUB x STEP x
     LT x MIN_X COND
     IF COND GOTO CLAMP_LEFT
     GOTO END_KEYS
@@ -70,8 +92,7 @@ LABEL CLAMP_LEFT
     GOTO END_KEYS
 
 LABEL MOVE_RIGHT
-    ADD x ONE x          // x = x + 1
-    // Clamp: si x > MAX_X => x = MAX_X
+    ADD x STEP x
     GT x MAX_X COND
     IF COND GOTO CLAMP_RIGHT
     GOTO END_KEYS
@@ -81,7 +102,7 @@ LABEL CLAMP_RIGHT
     GOTO END_KEYS
 
 LABEL END_KEYS
-    ASSIGN left_now left_prev
+    ASSIGN left_now  left_prev
     ASSIGN right_now right_prev
     GOTO MAIN_LOOP
 
