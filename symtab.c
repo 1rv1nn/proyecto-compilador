@@ -41,7 +41,9 @@ SymbolEntry* insert_symbol(const char *name, MeowType type) {
     new_entry->next = symbol_table_head;
     symbol_table_head = new_entry;
     
-    printf("DEBUG: Símbolo '%s' (%s) insertado en la tabla.\n", name, MeowTypeToString(type));
+    fprintf(stderr, "DEBUG: Símbolo '%s' (%s) insertado en la tabla.\n",
+        name, MeowTypeToString(type));
+
     return new_entry;
 }
 
@@ -64,7 +66,7 @@ SymbolEntry* insert_array_symbol(const char *name, MeowType elem_type, int lengt
     new_entry->next = symbol_table_head;
     symbol_table_head = new_entry;
 
-    printf("DEBUG: Arreglo '%s' (elemento: %s, length: %d) insertado en la tabla.\n", name, MeowTypeToString(elem_type), new_entry->array_length);
+    
     return new_entry;
 }
 

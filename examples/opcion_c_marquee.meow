@@ -1,0 +1,38 @@
+// Opción C: Letrero Dinámico (Marquee)
+
+// --- Posición y color del píxel ---
+meow meow x;
+meow meow y;
+meow meow color;
+
+// --- Variables de teclas (bool) ---
+meowmeow left_pressed;
+meowmeow right_pressed;
+
+// --- Inicialización ---
+x = 0;
+y = 30;      // fila aproximada al centro de la matriz 64x64
+color = 3;   // color cualquiera válido en el simulador
+
+left_pressed = meowf;
+right_pressed = meowf;
+
+// --- Bucle infinito controlado por teclas ---
+meowl (meowt) {
+    // Dibuja el píxel actual
+    miau_pixel(x, y, color);
+
+    // Lee estado de las teclas: 4 = izquierda, 6 = derecha (ejemplo)
+    miau_key(4, left_pressed);
+    miau_key(6, right_pressed);
+
+    // Si se presiona izquierda, mueve el píxel una columna a la izquierda
+    meoow (left_pressed) {
+        x = x - 1;
+    }
+
+    // Si se presiona derecha, mueve el píxel una columna a la derecha
+    meoow (right_pressed) {
+        x = x + 1;
+    }
+}

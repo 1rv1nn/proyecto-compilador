@@ -1,0 +1,87 @@
+// Opción C: Letrero Dinámico (Marquee)
+// Mensaje: "123.45$"
+// Cada carácter ocupa 4 columnas -> ancho total = 28
+// Controles: A = izquierda (KEY 6), D = derecha (KEY 7)
+
+VAR x
+VAR y
+VAR color
+VAR left_now
+VAR right_now
+VAR left_prev
+VAR right_prev
+VAR ONE
+VAR MIN_X
+VAR MAX_X
+VAR TMP
+VAR COND
+
+// Posición inicial del texto
+ASSIGN 0 x
+ASSIGN 30 y
+ASSIGN 3 color
+ASSIGN 0 left_now
+ASSIGN 0 right_now
+ASSIGN 0 left_prev
+ASSIGN 0 right_prev
+ASSIGN 1 ONE
+ASSIGN -28 MIN_X
+ASSIGN 63 MAX_X
+
+LABEL MAIN_LOOP
+    // Aquí debería dibujarse el texto completo a partir de x,y
+    // Por ahora, como placeholder, dibujamos un solo píxel.
+    PIXEL x y color
+
+    // Leer estado actual de teclas (A y D)
+    KEY 6 left_now    // A -> izquierda
+    KEY 7 right_now   // D -> derecha
+
+    // Flanco: left_now == 1 && left_prev == 0 ?
+    EQ left_now 1 TMP
+    IF TMP GOTO LEFT_MAYBE
+    GOTO CHECK_RIGHT
+
+LABEL LEFT_MAYBE
+    EQ left_prev 0 TMP
+    IF TMP GOTO MOVE_LEFT
+    GOTO CHECK_RIGHT
+
+LABEL CHECK_RIGHT
+    // Flanco: right_now == 1 && right_prev == 0 ?
+    EQ right_now 1 TMP
+    IF TMP GOTO RIGHT_MAYBE
+    GOTO END_KEYS
+
+LABEL RIGHT_MAYBE
+    EQ right_prev 0 TMP
+    IF TMP GOTO MOVE_RIGHT
+    GOTO END_KEYS
+
+LABEL MOVE_LEFT
+    SUB x ONE x          // x = x - 1
+    // Clamp: si x < MIN_X => x = MIN_X
+    LT x MIN_X COND
+    IF COND GOTO CLAMP_LEFT
+    GOTO END_KEYS
+
+LABEL CLAMP_LEFT
+    ASSIGN MIN_X x
+    GOTO END_KEYS
+
+LABEL MOVE_RIGHT
+    ADD x ONE x          // x = x + 1
+    // Clamp: si x > MAX_X => x = MAX_X
+    GT x MAX_X COND
+    IF COND GOTO CLAMP_RIGHT
+    GOTO END_KEYS
+
+LABEL CLAMP_RIGHT
+    ASSIGN MAX_X x
+    GOTO END_KEYS
+
+LABEL END_KEYS
+    ASSIGN left_now left_prev
+    ASSIGN right_now right_prev
+    GOTO MAIN_LOOP
+
